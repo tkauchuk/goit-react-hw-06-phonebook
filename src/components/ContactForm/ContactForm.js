@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import styles from './ContactForm.module.css';
+import actions from '../../redux/action-creators'
 
-import actions from '../../redux/items-actions'
 
-
-function ContactForm({existingContacts, onFormSubmit}) {
+function ContactForm() {
 
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
+    const existingContacts = useSelector(state => state.contacts.items);
+    const dispatch = useDispatch();
 
     const onInputChange = event => {
         const { name, value } = event.target;
@@ -33,6 +33,8 @@ function ContactForm({existingContacts, onFormSubmit}) {
         setName('');
         setNumber('');
     }
+
+    const onFormSubmit = contact => dispatch(actions.addUsersContact(contact));
 
     const HandleFormSubmit = event => {
         event.preventDefault();
@@ -84,18 +86,4 @@ function ContactForm({existingContacts, onFormSubmit}) {
         );
 }
 
-const mapStateToProps = state => ({
-    existingContacts: state.contacts.items
-});
-
-const mapDispatchToProps = dispatch => ({
-    onFormSubmit: user => dispatch(actions.addUsersContact(user))
-});
-
-
-ContactForm.propTypes = {
-    existingContacts: PropTypes.arrayOf(PropTypes.object),
-    onFormSubmit: PropTypes.func
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
+export default ContactForm;

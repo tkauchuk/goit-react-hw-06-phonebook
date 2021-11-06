@@ -1,11 +1,12 @@
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import styles from './ContactList.module.css';
+import actions from '../../redux/action-creators';
 
-import actions from '../../redux/items-actions';
 
-function ContactList({contacts, onDeleteButtonClick}) {
+function ContactList() {
+    const contacts = useSelector(({contacts: {items, filter}}) => getFilteredContacts(items, filter));
+    const dispatch = useDispatch();
 
     return (
         <ul className={styles.list}>
@@ -16,7 +17,7 @@ function ContactList({contacts, onDeleteButtonClick}) {
                             <p className={styles.name}>{name}</p>
                             <span className={styles.number}>{number}</span>
                             <button className={styles.button}
-                                    onClick={() => onDeleteButtonClick(uid)}>Delete
+                                    onClick={() => dispatch(actions.deleteUsersContact(uid))}>Delete
                             </button>
                         </div>
                     </li>
@@ -26,23 +27,10 @@ function ContactList({contacts, onDeleteButtonClick}) {
     );
 }
 
-const getFilteredContacts = (items, filter) => {
+function getFilteredContacts(items, filter) {
     return items.filter(item => {
         return item.name.toLowerCase().includes(filter.toLowerCase())
     })
 }
 
-const mapStateToProps = ({contacts: {items, filter}}) => ({
-    contacts: getFilteredContacts(items, filter)
-});
-
-const mapDispatchToProps = dispatch => ({
-    onDeleteButtonClick: id => dispatch(actions.deleteUsersContact(id))
-});
-
-ContactList.propTypes = {
-    contacts: PropTypes.arrayOf(PropTypes.object),
-    onDeleteButtonClick: PropTypes.func
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+export default ContactList;

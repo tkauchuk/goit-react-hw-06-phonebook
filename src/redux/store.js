@@ -1,31 +1,19 @@
-import { createStore, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { persistStore, persistReducer } from 'redux-persist'
+import { combineReducers } from 'redux';
+import { createReducer, configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-import types from './action-types';
+import actions from './action-creators';
 
-const items = (state = [], { type, payload }) => {
-  switch (type) {
-    case types.ADD:
-      return [payload, ...state];
+const items = createReducer([],{
+  [actions.addUsersContact]: (state, {payload}) => [payload, ...state],
+  [actions.deleteUsersContact]: (state, {payload}) => state.filter(({uid}) => uid !== payload)
+});
+const filter = createReducer('', {
+  [actions.changeContactsFilter]: (_, {payload}) => payload
+});
 
-    case types.DELETE:
-      return state.filter(item => item.uid !== payload);
-
-    default:
-      return state;
-  }
-};
-
-const filter = (state = '', {type, payload}) => {
-  switch (type) {
-    case types.FILTER:
-      return payload
-    default:
-      return state;
-  }
-};
+const reducer = combineReducers({items, filter});
 
 const persistConfig = {
   key: 'savedItems',
@@ -33,14 +21,20 @@ const persistConfig = {
   blacklist: ['filter']
 };
 
-const reducer = combineReducers({items, filter});
-
-const root = combineReducers({
-  contacts: persistReducer(persistConfig, reducer)
+const store = configureStore({
+  reducer: {
+    contacts: persistReducer(persistConfig, reducer)
+  },
+  middleware: (getDefaultMiddleware) => [...getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+    }
+  })],
+  devTools: process.env.NODE_ENV === 'development'
 });
-
-const store = createStore(root, composeWithDevTools());
 const persistor = persistStore(store);
 
-export default { store, persistor };
+const storeObj = {store, persistor};
+
+export default storeObj;
 

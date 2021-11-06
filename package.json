@@ -1,8 +1,8 @@
 {
-  "name": "create-react-app-template",
+  "name": "react-hw-06-phonebook",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://tkauchuk.github.io/my-app",
+  "homepage": "https://tkauchuk.github.io/goit-react-hw-06-phonebook",
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.2",
     "@testing-library/jest-dom": "^5.14.1",
@@ -13,7 +13,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
-    "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
@@ -48,7 +47,6 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "husky": "^7.0.2",
-    "prettier": "^2.4.1",
-    "redux-devtools-extension": "^2.13.9"
+    "prettier": "^2.4.1"
   }
 }

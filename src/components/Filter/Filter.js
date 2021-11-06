@@ -1,11 +1,11 @@
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './Filter.module.css';
+import actions from '../../redux/action-creators';
 
-import actions from '../../redux/items-actions';
-
-function Filter({onFilterChange, contacts, value}) {
+function Filter() {
+    const contacts = useSelector(state => state.contacts.items);
+    const filterValue = useSelector(state => state.contacts.filter);
+    const dispatch = useDispatch();
 
     return (
         <label className={styles.label}>
@@ -14,26 +14,13 @@ function Filter({onFilterChange, contacts, value}) {
                 className={styles.input}
                 type="text"
                 name="filter"
-                value={value}
+                value={filterValue}
                 autoComplete="off"
                 disabled={!contacts.length > 0}
-                onChange={onFilterChange}
+                onChange={e => dispatch(actions.changeContactsFilter(e.target.value))}
             />
         </label>
     );
 }
 
-const mapStateToProps = state => ({
-  value: state.contacts.filter,
-  contacts: state.contacts.items
-});
-
-const mapDispatchToProps = dispatch => ({
-  onFilterChange: (e) => dispatch(actions.changeContactsFilter(e.target.value))
-});
-
-Filter.propTypes = {
-    onFilterChange: PropTypes.func
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default Filter;
