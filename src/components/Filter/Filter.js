@@ -1,14 +1,11 @@
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import styles from './Filter.module.css';
 
+import actions from '../../redux/items-actions';
 
-function Filter({onFilterChange, isFilterActive}) {
-
-    const onFilterInputChange = event => {
-        const {value} = event.target;
-        onFilterChange(value);
-    }
+function Filter({onFilterChange, contacts, value}) {
 
     return (
         <label className={styles.label}>
@@ -17,16 +14,26 @@ function Filter({onFilterChange, isFilterActive}) {
                 className={styles.input}
                 type="text"
                 name="filter"
+                value={value}
                 autoComplete="off"
-                disabled={!isFilterActive}
-                onChange={onFilterInputChange}
+                disabled={!contacts.length > 0}
+                onChange={onFilterChange}
             />
         </label>
     );
 }
 
+const mapStateToProps = state => ({
+  value: state.contacts.filter,
+  contacts: state.contacts.items
+});
+
+const mapDispatchToProps = dispatch => ({
+  onFilterChange: (e) => dispatch(actions.changeContactsFilter(e.target.value))
+});
+
 Filter.propTypes = {
     onFilterChange: PropTypes.func
 }
 
-export default Filter;
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);
